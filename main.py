@@ -36,7 +36,7 @@ def execute(request: SimpleText, ray: Ray, state: State) -> SimpleText:
     print(request)
     for text in request.text:
         print(text)
-        qa_response = answer_question(text)
+        qa_response = answer_question(text,modelMethod="PHI2")
         response = qa_response
         output.append(response)
 
