@@ -1,9 +1,9 @@
 import os
 import warnings
 from typing import Dict
-
 import torch
 from transformers import pipeline
+from transformers import AutoModelForCausalLM, AutoTokenizer
 
 
 # create pieline for QA
@@ -13,6 +13,11 @@ from ontology_dc8f06af066e4a7880a5938933236037.simple_text import SimpleText
 
 from openfabric_pysdk.context import Ray, State
 from openfabric_pysdk.loader import ConfigClass
+
+from langchain_community.llms.huggingface_pipeline import HuggingFacePipeline
+
+from util import answer_question
+
 
 
 ############################################################
@@ -31,20 +36,8 @@ def execute(request: SimpleText, ray: Ray, state: State) -> SimpleText:
     print(request)
     for text in request.text:
         print(text)
-        qa_response = answer(text)
-        print(qa_response)
+        qa_response = answer_question(text)
         response = qa_response
         output.append(response)
 
     return SchemaUtil.create(SimpleText(), dict(text=output))
-
-
-def answer(question):
-    hf = pipeline(
-        model="EleutherAI/gpt-neo-2.7B",
-        task="text-generation",
-        max_length=200,
-        pad_token_id=50256
-    )
-    response = hf(question)
-    return response[0]['generated_text']
