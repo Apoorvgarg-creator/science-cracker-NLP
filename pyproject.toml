@@ -7,6 +7,9 @@ authors = ["Andrei"]
 [tool.poetry.dependencies]
 python = "^3.8"
 openfabric-pysdk = "0.2.7"
+transformers = "4.39.3"
+tf-keras = "2.15.0"
+torchvision= "0.17.2"
 
 
 [tool.poetry.dev-dependencies]
