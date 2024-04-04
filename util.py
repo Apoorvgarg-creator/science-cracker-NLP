@@ -1,7 +1,8 @@
 from openai import OpenAI
-from transformers import AutoModelForSeq2SeqLM,AutoModelForCausalLM, AutoTokenizer
+from transformers import *
+from huggingface_hub import login
 
-def answer_question(question, modelMethod="FLAN"):
+def answer_question(question, modelMethod="GEMMA"):
     if modelMethod == "CHATGPT":
         client = OpenAI(api_key="")
         response = client.chat.completions.create(
@@ -20,14 +21,30 @@ def answer_question(question, modelMethod="FLAN"):
         outputs = model.generate(**inputs, max_length=200)
         print(tokenizer.batch_decode(outputs, skip_special_tokens=True))
         return tokenizer.batch_decode(outputs, skip_special_tokens=True)
-    elif modelMethod == "PHI2":
-        model = AutoModelForCausalLM.from_pretrained("microsoft/phi-2")
-        tokenizer = AutoTokenizer.from_pretrained("microsoft/phi-2")
+    elif modelMethod == "PHI1":
+        model = AutoModelForCausalLM.from_pretrained("microsoft/phi-1")
+        tokenizer = AutoTokenizer.from_pretrained("microsoft/phi-1")
         inputs = tokenizer(question, return_tensors="pt", return_attention_mask=False)
         outputs = model.generate(**inputs, max_length=200)
         text = tokenizer.batch_decode(outputs)
         return text
+    elif modelMethod == "GEMMA":
+        login(token = "PLACE YOUR HUGGING FACE TOKEN")
+        tokenizer = AutoTokenizer.from_pretrained("google/gemma-7b-it")
+        model = AutoModelForCausalLM.from_pretrained("google/gemma-7b-it")
+        input_ids = tokenizer(question, return_tensors="pt")
+        outputs = model.generate(**input_ids)
+        print(tokenizer.decode(outputs[0]))
+        return tokenizer.decode(outputs[0])
+    else:
+        tokenizer = BertTokenizer.from_pretrained('allenai/scibert_scivocab_uncased')
+        model = BertLMHeadModel.from_pretrained('allenai/scibert_scivocab_uncased')
+        inputs = tokenizer(question,return_tensors="pt")
+        outputs = model.generate(**inputs, max_length=200)
+        text = tokenizer.batch_decode(outputs, skip_special_tokens=True)
+        print(text)
+        return text
 
 
 
-# answer_question("how to build a magnifying glass at home",modelMethod="")
+answer_question("What is the capital of France?", modelMethod="GEMMA")
