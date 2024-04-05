@@ -29,7 +29,7 @@ def answer_question(question, modelMethod="GEMMA"):
         text = tokenizer.batch_decode(outputs)
         return text
     elif modelMethod == "GEMMA":
-        login(token = "PLACE YOUR HUGGING FACE TOKEN")
+        login(token = "YOUR_HUGING FACE TOKEN")
         tokenizer = AutoTokenizer.from_pretrained("google/gemma-7b-it")
         model = AutoModelForCausalLM.from_pretrained("google/gemma-7b-it")
         input_ids = tokenizer(question, return_tensors="pt")
@@ -47,4 +47,4 @@ def answer_question(question, modelMethod="GEMMA"):
 
 
 
-answer_question("What is the capital of France?", modelMethod="GEMMA")
+answer_question("What is a convex lens ?", modelMethod="GEMMA")
